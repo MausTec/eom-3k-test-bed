@@ -90,7 +90,7 @@ void setup() {
   // Initialize TermUI
   delay(1000);
   TermUI::init();
-  Serial.println("READY.");
+  ANSI::logln("READY.");
   Hardware::setStatus1("READY");
 
   setKeypadLed(0);

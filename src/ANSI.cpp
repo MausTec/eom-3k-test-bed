@@ -6,12 +6,26 @@ namespace ANSI {
   void invert() { escape("7m"); }
   void reset() { escape("m"); }
   void home() { escape("2J"); escape("H"); }
-  void setCursor(int col, int row) { escape(String(row) + ";" + String(col) + "H"); }
-  void setCursor(int col) { escape(String(col) + "F"); }
+
+  void setCursor(int col, int row) {
+    cursorDirty = true;
+    escape(String(row) + ";" + String(col) + "H");
+  }
+
+  void setCursor(int col) {
+    cursorDirty = true;
+    escape(String(col) + "F");
+  }
+
   void setScrollRegion(int start = 0, int end = SCREEN_ROWS) { escape(String(start) + ";" + String(end) + "r"); }
   void altChar(char code) { Serial.print("\033(0"); Serial.print(code); Serial.print("\033(B"); }
   void save() { Serial.print("\0337"); }
-  void ret() { Serial.print("\0338"); }
+
+  void ret() {
+    cursorDirty = false;
+    Serial.print("\0338");
+  }
+
   void putChar(char code) { Serial.print(code); }
 
   void boxCharVT100(BoxChar c) {
@@ -105,7 +119,35 @@ namespace ANSI {
   }
 
   void clearLine() {
-    Serial.print("\r\033T");
+    putChar('\r');
+    escape("2K");
+  }
+
+  void log(const char *str, bool rtrn) {
+    if (!cursorDirty)
+      ANSI::setCursor(logcol, SCREEN_ROWS - 2);
+
+    for (int i = 0; i < strlen(str); i++) {
+      char c = str[i];
+      if (c == '\t') {
+        logcol += 8 - (logcol % 8);
+      } else {
+        logcol += 1;
+      }
+
+      if (c == '\r' || c == '\n')
+        logcol = 0;
+
+      Serial.print(c);
+    }
+
+    if (rtrn)
+      ret();
+  }
+
+  void logln(const char *str) {
+    log(str, false);
+    log("\n");
   }
 
   // Print Commands

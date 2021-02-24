@@ -1,5 +1,6 @@
 #include "../include/TermUI.h"
 #include "../include/TestRun.h"
+#include "../include/Console.h"
 
 namespace TermUI {
   void drawStatus() {
@@ -30,8 +31,9 @@ namespace TermUI {
     ANSI::drawHLine(SCREEN_ROWS - TERM_ROWS - 1, 1, 2);
     Serial.print("Console");
     ANSI::drawHLine(SCREEN_ROWS - TERM_ROWS - 1, 10);
-    ANSI::setScrollRegion(SCREEN_ROWS - TERM_ROWS, SCREEN_ROWS - 1);
+    ANSI::setScrollRegion(SCREEN_ROWS - TERM_ROWS, SCREEN_ROWS - 2);
     ANSI::setCursor(0, SCREEN_ROWS - 1);
+    Serial.print("> ");
     ANSI::save();
   }
 

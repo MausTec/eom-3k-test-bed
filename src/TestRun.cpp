@@ -46,7 +46,7 @@ void TestRun::startAsync() {
   pass_count = 0;
   fail_count = 0;
   p_current = p_first;
-  Serial.println("== Starting Test Run ==");
+  ANSI::logln("== Starting Test Run ==");
   Hardware::setStatus1("Testing...");
 }
 
@@ -56,19 +56,19 @@ void TestRun::executeNext() {
     return;
   }
 
-  Serial.print("Test: ");
-  Serial.println(n->test->getName());
+  ANSI::log("Test: ");
+  ANSI::logln(n->test->getName());
   Hardware::setStatus2(n->test->getName());
   TestResult *result = n->test->execute();
 
-  Serial.print("\t");
-  Serial.print(result->message);
-  Serial.print("\t");
+  ANSI::log("\t");
+  ANSI::log(result->message);
+  ANSI::log("\t");
   char buf[10];
   dtostrf(result->value, 1, 1, buf);
-  Serial.print(buf);
-  Serial.print("\t");
-  Serial.println(result->pass ? "PASS" : "FAIL");
+  ANSI::log(buf);
+  ANSI::log("\t");
+  ANSI::logln(result->pass ? "PASS" : "FAIL");
 
   if (n->result != nullptr)
     free(n->result);

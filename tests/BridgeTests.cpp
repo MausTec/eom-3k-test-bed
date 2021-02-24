@@ -39,12 +39,12 @@ TEST(BRIDGE_CHECK) {
     for(int j = i+1; j < wire_count; j++) {
       b = wires[j];
       if (IO2.digitalRead(b)) {
-        Serial.print("\tShort Check: ");
-        Serial.print(a);
-        Serial.print(" <> ");
-        Serial.print(b);
-        Serial.print(" = ");
-        Serial.println("SHORT");
+        ANSI::log("\tShort Check: ");
+        ANSI::log(a);
+        ANSI::log(" <> ");
+        ANSI::log(b);
+        ANSI::log(" = ");
+        ANSI::logln("SHORT");
         shorts++;
       }
     }

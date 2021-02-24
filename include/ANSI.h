@@ -9,6 +9,11 @@
 #define TERM_ROWS 8
 
 namespace ANSI {
+  namespace {
+    size_t logcol = 0;
+    bool cursorDirty = false;
+  }
+
   enum BoxChar {
     TopLeft,
     TopRight,
@@ -35,6 +40,12 @@ namespace ANSI {
   void altChar(char code);
   void save();
   void ret();
+
+  void hideCursor();
+  void showCursor();
+
+  void log(const char *str, bool ret = true);
+  void logln(const char *str);
 
   // Print Commands
   void printCenter(const char *str, int startCol = 1, int endCol = SCREEN_COLS);
