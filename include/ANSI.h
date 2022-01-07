@@ -45,6 +45,7 @@ namespace ANSI {
   void showCursor();
 
   void log(const char *str, bool ret = true);
+  void log(int i);
   void logln(const char *str);
 
   // Print Commands

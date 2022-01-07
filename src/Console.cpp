@@ -1,12 +1,12 @@
-#include "../include/ANSI.h"
-#include "../include/Console.h"
+#include "ANSI.h"
+#include "Console.h"
 
 #include <Arduino.h>
 
-extern key1Click();
-extern key2Click();
-extern key3Click();
-extern key4Click();
+extern void key1Click(void);
+extern void key2Click(void);
+extern void key3Click(void);
+extern void key4Click(void);
 
 namespace Console {
   void FKey(int f) {

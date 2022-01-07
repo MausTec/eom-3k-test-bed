@@ -1,5 +1,5 @@
-#include "../include/VoltageSense.h"
-#include "../pinout.h"
+#include "VoltageSense.h"
+#include "pinout.h"
 
 #include <Arduino.h>
 #include <Adafruit_MCP23017.h>

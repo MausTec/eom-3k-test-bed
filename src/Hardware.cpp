@@ -1,13 +1,13 @@
 #include <Adafruit_LiquidCrystal.h>
 
-#include "../include/Hardware.h"
-#include "../include/ANSI.h"
-#include "../pinout.h"
+#include "Hardware.h"
+#include "ANSI.h"
+#include "pinout.h"
 
 extern Adafruit_LiquidCrystal LCD;
 
 namespace Hardware {
-  void setStatus1(char *status) {
+  void setStatus1(const char *status) {
     LCD.setCursor(0,0);
     LCD.print(status);
     for (int i = strlen(status); i < 16; i++) {
@@ -19,7 +19,7 @@ namespace Hardware {
     ANSI::ret();
   }
 
-  void setStatus2(char *status) {
+  void setStatus2(const char *status) {
     LCD.setCursor(0,1);
     LCD.print(status);
     for (int i = strlen(status); i < 16; i++) {

@@ -1,6 +1,6 @@
-#include "../include/TermUI.h"
-#include "../include/TestRun.h"
-#include "../include/Console.h"
+#include "TermUI.h"
+#include "TestRun.h"
+#include "Console.h"
 
 namespace TermUI {
   void drawStatus() {

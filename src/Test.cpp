@@ -1,4 +1,4 @@
-#include "../include/Test.h"
+#include "Test.h"
 
 bool TestCase::reg(TestCase *tc) {
   if (p_first == nullptr) {

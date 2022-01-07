@@ -1,6 +1,6 @@
-#include "../include/Test.h"
-#include "../include/VoltageSense.h"
-#include "../pinout.h"
+#include "Test.h"
+#include "VoltageSense.h"
+#include "pinout.h"
 #include <Adafruit_MCP23017.h>
 
 extern Adafruit_MCP23017 IO1;

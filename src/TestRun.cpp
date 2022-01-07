@@ -1,9 +1,15 @@
-#include "../include/TestRun.h"
-#include "../include/Test.h"
-#include "../include/TermUI.h"
-#include "../include/Hardware.h"
+#include "TestRun.h"
+#include "Test.h"
+#include "TermUI.h"
+#include "Hardware.h"
+
+#include "citizen-printer/CitizenPrinter.hpp"
+
+CitizenPrinter printer = CitizenPrinter(VSER_RXD_PIN, VSER_TXD_PIN, VSER_CTS_PIN, 0);
 
 TestRun *TestRun::init() {
+  printer.begin();
+
   TestRun *run = new TestRun();
   TestCase *p = TestCase::first();
 
@@ -23,6 +29,32 @@ TestRun *TestRun::recent() {
 void TestRun::tick() {
   if (p_recent) {
     p_recent->executeNext();
+  }
+}
+
+void TestRun::reset() {
+  if (p_recent != nullptr) {
+    TestRun *run = p_recent;
+    TestResultNode *n = p_recent->first();
+    while (n != nullptr) {
+      TestResultNode *next = n->next;
+      if (n->result != nullptr) {
+        delete(n->result);
+      }
+      delete (n);
+      n = next;
+    }
+
+    delete(run);
+    run = new TestRun();
+    TestCase *p = TestCase::first();
+
+    while (p != nullptr) {
+      run->addTestResult(nullptr, p);
+      p = p->next();
+    }
+
+    TestRun::p_recent = run;
   }
 }
 
@@ -91,9 +123,14 @@ void TestRun::executeNext() {
 
 extern void setStatusLed(byte);
 
+bool TestRun::finalized() {
+  return is_finalized;
+}
+
 void TestRun::finalize() {
   char msg[18];
   char val[9];
+  is_finalized = true;
   strcpy(msg, "Pass: ");
   itoa(pass_count, val, 10);
   strcat(msg, val);
@@ -108,6 +145,59 @@ void TestRun::finalize() {
   } else {
     setStatusLed(0x2);
   }
+}
+
+void TestRun::printResults(bool shortForm) {
+  char lineBuffer[41];
+
+  ANSI::logln("Printing test results...");
+  printer.printCenter("============= TEST RESULTS =============");
+
+  if (fail_count > 0) {
+    printer.red();
+  }
+  printer.printTable("Result:", fail_count > 0 ? "FAIL" : "PASS");
+  printer.printTable("Serial No:", "N/A");
+  ANSI::logln("    - printing table");
+  printer.hr();
+
+  TestResultNode *p = first();
+  bool printedOne = false;
+  while (p != nullptr) {
+    if (shortForm && (p->result == nullptr || p->result->pass)) {
+      p = p->next;
+      continue;
+    }
+    printedOne = true;
+    if (p->result == nullptr) {
+      printer.printTable(p->test->getName(), "SKIP");
+    } else {
+      if (!p->result->pass) { printer.red(); printer.reverse(); }
+      printer.printTable(p->test->getName(), p->result->pass ? "Pass" : "FAIL");
+      if (!p->result->pass) printer.red();
+      dtostrf(p->result->value, 1, 1, lineBuffer);
+      printer.printTable(p->result->message, lineBuffer);
+    }
+
+    p = p->next;
+  }
+
+  ANSI::logln("    - post-table summary");
+  if (printedOne) printer.hr();
+  itoa(pass_count, lineBuffer, 10);
+  printer.printTable("Pass:", lineBuffer);
+  itoa(fail_count, lineBuffer, 10);
+  printer.red();
+  printer.printTable("Fail:", lineBuffer);
+
+  ANSI::logln("    - ejecting sheet yeet");
+  printer.println();
+  printer.println();
+  printer.println();
+  printer.println();
+  printer.println();
+  printer.println();
+  printer.println();
 }
 
 void TestRun::addTestResult(TestResult *result, TestCase *test) {

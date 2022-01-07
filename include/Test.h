@@ -1,11 +1,17 @@
 #ifndef __test_h
 #define __test_h
 
-#include <arduino.h>
+#include <Arduino.h>
 
 typedef struct TestResult {
-  TestResult(bool p, char *m) : pass(p), message(m) {}
-  TestResult(bool p, char *m, float v) : pass(p), message(m), value(v) {}
+  TestResult(bool p, const char *m) : pass(p) { 
+    message = (char*) malloc((sizeof(char) * strlen(m)) + 1);
+    memcpy(message, m, strlen(m));
+  }
+  TestResult(bool p, const char *m, float v) : pass(p), value(v) { 
+    message = (char*) malloc((sizeof(char) * strlen(m)) + 1);
+    memcpy(message, m, strlen(m));
+  }
   ~TestResult() { free(message); }
   bool pass;
   char *message;
@@ -35,7 +41,7 @@ private:
   class TestCase_##name : public TestCase { \
     TestResult *execute(); \
     const char *getName() override { return name; }; \
-    char *name = #name; \
+    const char *name = #name; \
   }; \
   bool tc_registered_##name = TestCase::reg(new TestCase_##name()); \
   TestResult *TestCase_##name::execute()

@@ -1,6 +1,6 @@
-#include "../include/Test.h"
-#include "../include/VoltageSense.h"
-#include "../pinout.h"
+#include "Test.h"
+#include "VoltageSense.h"
+#include "pinout.h"
 
 TEST(SHORT_12V) {
   VoltageSense::enableResistance12V();
@@ -23,7 +23,7 @@ TEST(SHORT_3V3) {
   float res = VoltageSense::measureResistance();
   VoltageSense::disableTestRails();
 
-  EXPECT(res > 1000, res);
+  EXPECT(res > 700, res);
 }
 
 TEST(VOLTAGE_12V) {

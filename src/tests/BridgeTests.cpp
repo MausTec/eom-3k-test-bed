@@ -1,6 +1,8 @@
-#include "../include/Test.h"
+#include "Test.h"
 #include <Arduino.h>
 #include <Adafruit_MCP23017.h>
+#include "ANSI.h"
+#include "pinout.h"
 
 extern Adafruit_MCP23017 IO2;
 

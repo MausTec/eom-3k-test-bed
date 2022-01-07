@@ -30,8 +30,8 @@
 #define IO1_EN_12V        3
 #define IO1_PRES_VIN1     4
 #define IO1_PRES_VIN2     5
-#define IO1_TEST_USB_D+   6
-#define IO1_TEST_USB_D-   7
+#define IO1_TEST_USB_DP   6
+#define IO1_TEST_USB_DM   7
 
 #define IO1_TEST_MOT_PWM  8
 #define IO1_TEST_RJ_SDAP  9

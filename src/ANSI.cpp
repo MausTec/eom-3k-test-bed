@@ -1,4 +1,4 @@
-#include "../include/ANSI.h"
+#include "ANSI.h"
 
 namespace ANSI {
   void escape(String code) {Serial.print("\033["); Serial.print(code); }
@@ -17,7 +17,7 @@ namespace ANSI {
     escape(String(col) + "F");
   }
 
-  void setScrollRegion(int start = 0, int end = SCREEN_ROWS) { escape(String(start) + ";" + String(end) + "r"); }
+  void setScrollRegion(int start, int end) { escape(String(start) + ";" + String(end) + "r"); }
   void altChar(char code) { Serial.print("\033(0"); Serial.print(code); Serial.print("\033(B"); }
   void save() { Serial.print("\0337"); }
 
@@ -114,7 +114,7 @@ namespace ANSI {
   }
 
   void init() {
-    escape('z');
+    escape("z");
     home();
   }
 
@@ -127,7 +127,7 @@ namespace ANSI {
     if (!cursorDirty)
       ANSI::setCursor(logcol, SCREEN_ROWS - 2);
 
-    for (int i = 0; i < strlen(str); i++) {
+    for (size_t i = 0; i < strlen(str); i++) {
       char c = str[i];
       if (c == '\t') {
         logcol += 8 - (logcol % 8);
@@ -145,13 +145,19 @@ namespace ANSI {
       ret();
   }
 
+  void log(int i) {
+    char buffer[50];
+    itoa(i, buffer, 10);
+    log(buffer, false);
+  }
+
   void logln(const char *str) {
     log(str, false);
     log("\n");
   }
 
   // Print Commands
-  void printCenter(const char *str, int startCol = 1, int endCol = SCREEN_COLS) {
+  void printCenter(const char *str, int startCol, int endCol) {
     int len = strlen(str);
     int width = endCol - startCol + 1;
     int space_pre = (width - len) / 2;
@@ -169,7 +175,7 @@ namespace ANSI {
     }
   }
 
-  void printLeft(const char *str, int minWidth = 0) {
+  void printLeft(const char *str, int minWidth) {
     int len = strlen(str);
     int space_post = minWidth - len;
 
@@ -179,7 +185,7 @@ namespace ANSI {
     }
   }
 
-  void printRight(const char *str, int minWidth = 0) {
+  void printRight(const char *str, int minWidth) {
     int len = strlen(str);
     int space_pre = minWidth - len;
 
@@ -190,21 +196,21 @@ namespace ANSI {
     Serial.print(str);
   }
 
-  void drawHLine(int row, int startCol = 1, int endCol = SCREEN_COLS) {
+  void drawHLine(int row, int startCol, int endCol) {
     setCursor(startCol, row);
     for (int i = startCol; i <= endCol; i++) {
       boxChar(Horizontal);
     }
   }
 
-  void drawVLine(int col, int startRow = 1, int endRow = SCREEN_ROWS) {
+  void drawVLine(int col, int startRow, int endRow) {
     for (int i = startRow; i <= endRow; i++) {
       setCursor(col, i);
       boxChar(Vertical);
     }
   }
 
-  void drawBox(int x, int y, int width, int height, const char *title = "") {
+  void drawBox(int x, int y, int width, int height, const char *title) {
     const int titleIndent = 3;
 
     int titleLen = strlen(title);

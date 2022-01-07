@@ -17,8 +17,10 @@ public:
 
   static TestRun *recent();
   static void tick();
+  static void reset();
 
   void execute();
+  void printResults(bool shortForm = false);
 
   void addTestResult(TestResult *result, TestCase *test);
 
@@ -26,6 +28,7 @@ public:
   void startAsync();
   void executeNext();
   void finalize();
+  bool finalized();
 
   TestResultNode *first();
 private:
@@ -36,6 +39,7 @@ private:
 
   int pass_count = 0;
   int fail_count = 0;
+  bool is_finalized = false;
 };
 
 #endif
